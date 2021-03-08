@@ -28,7 +28,7 @@ def background_thread():
 
 @app.route('/')
 def index():
-    return render_template('test1.html', async_mode=socketio.async_mode)
+    return render_template('chat_test.html', async_mode=socketio.async_mode)
 
 @socketio.on('my_event', namespace='/test')
 def mtest_message(message):

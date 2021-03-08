@@ -3,30 +3,36 @@
 
 from flask import Flask, request, render_template
 from flask_socketio import SocketIO, emit
-
+import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+socketio = SocketIO(app, logger=True, engineio_logger=True)
+
+
+
 
 
 @app.route('/')
 def index():
-    return render_template('test.html')
+    return render_template('websocket_test.html')
 
 # 触发事件my event：回复只发送此连接
 
 
 @socketio.on('my_event', namespace='/chat')
 def test_message(message):
-    print(message)
+    print("my_event -> " + str(message) )
     emit('my_response', {'data': message['data']})
+    while True:
+        time.sleep(2)
+        emit('my_response', {'data': message['data']})
 
 
 # 触发事件my broadcast event：：回复所有链接（广播）
-@socketio.on('my_broadcast event', namespace='/chat')
+@socketio.on('my_broadcast event')
 def test_message(message):
-    print(message)
+    print("my_broadcast event -> " + str(message))
     emit('my_response', {'data': message['data']}, broadcast=True)
 
 ##################################################################
@@ -47,3 +53,6 @@ def test_disconnect():
 
 if __name__ == '__main__':
     socketio.run(app, host='127.0.0.1', port=8200, debug=True)
+
+
+# , namespace='/chat'
