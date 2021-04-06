@@ -19,7 +19,7 @@ def index():
 
 # 触发事件my event：回复只发送此连接
 
-
+# 下面指定的namespace，若客户端要连接到此namespace时 需要指定 io.connect(url/chat)。
 @socketio.on('my_event', namespace='/chat')
 def test_message(message):
     print("my_event -> " + str(message) )
@@ -54,5 +54,3 @@ def test_disconnect():
 if __name__ == '__main__':
     socketio.run(app, host='127.0.0.1', port=8200, debug=True)
 
-
-# , namespace='/chat'

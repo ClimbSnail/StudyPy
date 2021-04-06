@@ -9,13 +9,29 @@ app = Flask(__name__)
 # 加入路由信息
 
 
+def request_parse(req):
+    '''解析请求数据并以json形式返回'''
+    data = None
+    try:
+        if req.method == 'POST':
+            data = req.json
+        elif req.method == 'GET':
+            data = str(dict(req.args)).replace("'", '"')
+        elif req.method == 'PUT':
+            data = str(req.get_data(), encoding="utf8")
+        else:
+            data = dict()
+    except Exception as err:
+        print(err)
+    return data
+
 @app.route("/")
 def index():
     # 使用render_template，文件必须要同级目录的templates文件夹中
     return render_template("login.html")
 
 
-@app.route("/login", methods=['POST'])
+@app.route("/login", methods=['POST', 'GET'])
 def login():
     # 接收到用户名和密码（获取form表单中的数据）
     # {username:你写的内容 pwd:你写的内容}
