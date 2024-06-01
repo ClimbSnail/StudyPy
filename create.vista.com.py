@@ -174,7 +174,7 @@ class Trans:
 
     def run(self):
         while True:
-            print("下载%s线程开始下载新图片" % self.name)
+            print("%s线程开始下载新图片" % self.name)
             # -------------此处记得加上线程锁--------------------#
             Trans.cond1.acquire()  # 获得锁
             Trans.index += 1  # 记录当前词典读词的位置
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     thread_num = 30
     Translist = []
     for i in range(0, thread_num, 1):
-        Translist.append(Trans('t' + str(i)))
+        Translist.append(Trans('T' + str(i)))
 
     thread_object = []
     for i in range(0, thread_num, 1):  # 创建多线程,并将添加线程对象添加进列表对象thread_object中
