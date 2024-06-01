@@ -52,7 +52,7 @@ class Trans:
     @classmethod
     def get_link_list(self, page_max):
         print("正在获取前%d页的图片链接" % page_max)
-        for page in range(page_max):
+        for page in range(page_max+1):
             try:
                 re = requests.post(url=Trans.url_bilingual + str(page), headers=Trans.headers)  #
                 re.encoding = 'utf-8'  # 编码格式
@@ -82,8 +82,11 @@ class Trans:
                     Trans.img_name = Trans.img_name + img_name
             except Exception as err:
                 print(err)
-        for name in Trans.img_name:
-            print(name)
+        
+        # for name in Trans.img_name:
+        #     print(name)
+
+        # print(Trans.img_url)
 
     def analysis_data(self, url, path):
         """
@@ -91,11 +94,10 @@ class Trans:
         """
         self.result = 0
         try:
-            for link, title in zip(url, path):
-                response = requests.get(url)
-                # 将图片数据写入本地文件
-                with open(path, 'wb') as file:
-                    file.write(response.content)
+            response = requests.get(url)
+            # 将图片数据写入本地文件
+            with open(path, 'wb') as file:
+                file.write(response.content)
 
             self.result = 1
 
@@ -199,6 +201,14 @@ class Trans:
             #     self.se = requests                    #session对象
             self.analysis_data(Trans.img_url[self.now_index],
                                Trans.fwname + "/" + str(self.now_index) + "-" + Trans.img_name[self.now_index] + ".jpg")
+            
+            # 下载视频
+            if "videoStaticPreview=true&" in Trans.img_url[self.now_index]:
+                video_url = Trans.img_url[self.now_index][0:-30]+"token="
+                # print("video_url = ", video_url)
+            
+                self.analysis_data(video_url,
+                                Trans.fwname + "/" + str(self.now_index) + "-" + Trans.img_name[self.now_index] + ".mp4")
 
             # -------------此处记得加上线程锁--------------------#
             if self.result == 1:
@@ -218,7 +228,7 @@ if __name__ == "__main__":
     os.system("create.vista.com/videos/galaxy-seamless-loop")
     Trans.init()  # 初始化并且获取词典开始位置
     Trans.get_link_list(5)
-    thread_num = 30
+    thread_num = 40
     Translist = []
     for i in range(0, thread_num, 1):
         Translist.append(Trans('T' + str(i)))
